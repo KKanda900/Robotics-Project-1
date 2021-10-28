@@ -12,9 +12,11 @@ print(start)
 print(goal)
 print('\n\n\n')
 
-print(intersection(robot, obstacles[0]))
+''' print(robot)
 
-''' #visualize_points([(2, 2), (5, 6)], robot, obstacles, start, goal)
+print(intersection(robot, obstacles[0])) '''
+
+#visualize_points([(2, 2), (5, 6)], robot, obstacles, start, goal)
 
 tree_search = Tree(robot, obstacles, start, goal)
 point1 = (1.4682256265766205, 9.410916920372491)
@@ -35,4 +37,4 @@ path = rtt(robot, obstacles, start, goal, 10)
 print(path)
 #visualize_path(robot, obstacles, path)
 visualize_rrt(robot, obstacles, start, goal, 10)
-#print(translate_robot(robot, (1.0, 2.0))) '''
+#print(translate_robot(robot, (1.0, 2.0)))

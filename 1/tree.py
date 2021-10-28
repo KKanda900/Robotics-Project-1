@@ -16,6 +16,7 @@ class Tree:
     start = None
     goal = None
     root = None
+    cost = 0
     nodes = []
     path = []
 
@@ -27,6 +28,17 @@ class Tree:
         self.root = BSTNode(start, None, None)
 
     # pre-order traversal: parent-left-right
+    '''
+    Pre-order Traversal: 
+
+    parent
+    left   parent
+    right  left   parent
+    parent right  left
+    left   left   right
+    ... 
+
+    '''
     def print(self, root):
         if root != None:
             print(root.point)
@@ -34,6 +46,25 @@ class Tree:
             self.print(root.left)
             self.print(root.right)
 
+    def get_cost(self, point):
+        ptr = self.root
+        prev = None
+        while ptr is not None:
+            if point == ptr.point:
+                ptr.point.cost = self.euclidean_distance((0, 0), ptr.point)
+                return ptr.point.cost
+
+            prev = ptr
+            if point < ptr.point:
+                ptr = ptr.left
+            else:
+                ptr = ptr.right
+
+    def nearest_neighborhood(self, point):
+        pass
+
+    def rewire(self, point, r):
+        pass
 
     def add_pt(self, point):
         ptr = self.root
@@ -147,26 +178,8 @@ class Tree:
 
         return coord
 
-    def check_intersection(self, polygon1, polygon2):
-        return not set(map(lambda x: frozenset(tuple(x)), polygon1)).isdisjoint(set(map(lambda x: frozenset(tuple(x)), polygon2)))
-
-    def multidim_intersect(self, arr1, arr2):
-        arr1_view = arr1.view([('',arr1.dtype)]*arr1.shape[1])
-        arr2_view = arr2.view([('',arr2.dtype)]*arr2.shape[1])
-        intersected = np.intersect1d(arr1_view, arr2_view)
-        return intersected.view(arr1.dtype).reshape(-1, arr1.shape[1])
-
-    
-    # Takes full line segment and checks for intersection
-    def isCollisionFree(self, line):
-        for i in range(len(self.obstacles)):
-            if self.check_intersection(line, self.obstacles[i]):
-                return False
-
-        return True
-
     # Uses point by point basis
-    def isCollisionFree_(self, line):
+    def isCollisionFree(self, line):
         for i in range(len(line)):
             if isCollisionFree(self.robot, line[i], self.obstacles) == False:
                 return False
@@ -193,7 +206,7 @@ class Tree:
         step_size = 5
         line_segment = self.generate_points(point1, point2, step_size)
 
-        if self.isCollisionFree_(line_segment):
+        if self.isCollisionFree(line_segment):
             return True
 
         return False 
