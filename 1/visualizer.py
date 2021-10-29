@@ -25,30 +25,6 @@ def visualize_problem(robot, obstacles, start, goal):
 
     plt.show()
 
-''' def visualize_points(points, robot, obstacles, start, goal):
-    for i in range(len(points)):
-        fig,ax = plt.subplots()
-            
-        ax.plot(start[0], start[1], 'y*')
-        ax.plot(goal[0], goal[1], 'g*')
-
-        p1 = Polygon(robot, facecolor='k')
-        t = mpl.transforms.Affine2D().translate(points[i][0],points[i][1])
-        tra = t + ax.transData
-        p1.set_transform(tra)
-
-        #p1 = Polygon(translate_robot(robot, points[i]), facecolor='k')
-            
-        for i in range(len(obstacles)):
-            p = Polygon(obstacles[i], facecolor='r')
-            ax.add_patch(p)   
-
-        ax.add_patch(p1)
-        ax.set_xlim([0,10])
-        ax.set_ylim([0,10])
-
-        plt.show() '''
-
 # fix this`
 def visualize_points(points, robot, obstacles, start, goal):
     fig = plt.figure()
@@ -57,7 +33,6 @@ def visualize_points(points, robot, obstacles, start, goal):
     ax.set_ylim(0,10)
 
     v= np.array(robot)
-    print(v)
 
     patch = Polygon(v,closed=True, fc='r', ec='r')
     ax.add_patch(patch)
@@ -128,15 +103,11 @@ def visualize_rrt(robot, obstacles, start, goal, iter_n):
             st.add(q_rand, q_nearest)
             rtt_pts.append(q_rand)
             rtt_pts.append(q_nearest)
-            ''' plt.plot([q_rand[0], q_nearest[0]], [q_rand[1], q_nearest[1]])
-            plt.pause(0.05) '''
 
     if st.extends(st.nodes[len(st.nodes)-1], goal):
         st.add(st.nodes[len(st.nodes)-1], goal)
         rtt_pts.append(st.nodes[len(st.nodes)-1])
         rtt_pts.append(goal)
-        ''' plt.plot([st.nodes[len(st.nodes)-1][0], goal[0]], [st.nodes[len(st.nodes)-1][1], goal[1]])
-        plt.pause(0.05) '''
 
     x = []
     y = []
@@ -151,3 +122,53 @@ def visualize_rrt(robot, obstacles, start, goal, iter_n):
 
     plt.show()
 
+def visualize_rrt_star(robot, obstacles, start, goal , iter_n):
+    fig,ax = plt.subplots()
+
+    st = Tree(robot, obstacles, start, goal)
+
+    plt.plot(start[0], start[1])
+    plt.plot(goal[0], goal[1])
+
+    p1 = Polygon(robot, facecolor='k')
+            
+    for i in range(len(obstacles)):
+        p = Polygon(obstacles[i], facecolor='r')
+        ax.add_patch(p)   
+
+    ax.add_patch(p1)
+
+    rtt_pts = []
+
+    for n in range(iter_n):
+        x_rand = sample()
+        x_nearest = st.nearest(x_rand)
+
+        if st.extends(x_nearest, x_rand):
+            st.add(x_nearest, x_rand)
+            st.rewire(x_rand, 1.5)
+            rtt_pts.append(x_nearest)
+            rtt_pts.append(x_rand)
+
+    if st.extends(st.nodes[len(st.nodes)-1], goal):
+        st.add(st.nodes[len(st.nodes)-1], goal)
+        st.rewire(goal, 1.5)
+        rtt_pts.append(st.nodes[len(st.nodes)-1])
+        rtt_pts.append(goal)
+
+    x = []
+    y = []
+    for i in range(len(rtt_pts)):
+        x.append(rtt_pts[i][0])
+        y.append(rtt_pts[i][1])
+
+    plt.plot(x, y)
+   
+    ax.set_xlim([0,10])
+    ax.set_ylim([0,10])
+
+    plt.show()
+
+    
+
+    
