@@ -60,12 +60,48 @@ class Tree:
             else:
                 ptr = ptr.right
 
-    def nearest_neighborhood(self, point):
-        pass
+    def nearest_neighborhood(self, point, dist):
+        ptr = self.root
+
+        distance = dist
+        nearest_neighbors = []
+
+        while ptr is not None:
+            if point != ptr.point:
+                new_distance = self.euclidean_distance(point, ptr.point)
+            
+            if new_distance < distance:
+                nearest_neighbors.append(ptr.point)
+
+            if point == ptr.point:
+                break
+
+            if point < ptr.point:
+                ptr = ptr.left
+            else:
+                ptr = ptr.right
+
+        return nearest_neighbors
 
     def rewire(self, point, r):
-        pass
+        neighbors = self.nearest_neighborhood(point, r)
 
+        for n in neighbors:
+            if self.extends(point, n) and self.get_cost(point) + (self.get_cost(point) + self.euclidean_distance(point, n)) < self.get_cost(n):
+                ptr = self.root
+                prev = None
+                while ptr is not None:
+                    if point == ptr.point:
+                        prev.point = n.point
+
+                    prev = ptr
+                    if point < ptr.point:
+                        ptr = ptr.left
+                    else:
+                        ptr = ptr.right
+
+        return self.root
+            
     def add_pt(self, point):
         ptr = self.root
         prev = None
