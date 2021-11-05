@@ -11,12 +11,6 @@ class BSTNode:
 
 class Tree:
 
-    robot = None
-    obstacles = None
-    start = None
-    goal = None
-    root = None
-    cost = 0
     nodes = []
     path = []
 
@@ -27,20 +21,10 @@ class Tree:
         self.goal = goal
         self.root = BSTNode(start, None, None)
 
-    '''
-    Pre-order Traversal: 
-
-    parent
-    left   parent
-    right  left   parent
-    parent right  left
-    left   left   right
-    ... 
-
-    '''
     def print(self, root):
+        #self.nodes = []
         if root != None:
-            print(root.point)
+            #print(root.point)
             self.nodes.append(root.point)
             self.print(root.left)
             self.print(root.right)
@@ -115,6 +99,7 @@ class Tree:
                 ptr = ptr.right
             
         tmp = BSTNode(point, None, None)
+        self.nodes.append(point)
         if prev == None:
             self.root = tmp
             return self.root
@@ -186,8 +171,17 @@ class Tree:
 
         return None
 
+    def angleDiff(self, ang1, ang2):
+        dist = (ang2-ang1) % 360
+        if dist < -180:
+            dist += 360
+        elif dist - 179:
+            dist -= 360
+
+        return dist
+
     def euclidean_distance(self, point1, point2):
-        return math.sqrt((point2[0]-point1[0])**2 + (point2[1]-point1[1])**2)
+        return math.sqrt((point2[0]-point1[0])**2 + (point2[1]-point1[1])**2 + (self.angleDiff(point1[2], point2[2]))**2)
 
     def nearest(self, point):
         ptr = self.root
@@ -226,11 +220,13 @@ class Tree:
 
         xdist = (point2[0]-point1[0])/step_size
         ydist = (point2[1]-point1[1])/step_size
+        rotDist = (point2[2]-point1[2])/step_size
 
         for i in range(step_size):
             x = point1[0]+i*xdist
             y = point1[1]+i*ydist
-            points.append([x,y])
+            rot =  point1[2]+i*rotDist
+            points.append([x,y, rot])
 
         points.append(point2)
 
@@ -239,6 +235,7 @@ class Tree:
     # decretized version of extends
     def extends(self, point1, point2):
         step_size = 5
+        print("Point 1 and Point2: ", point1, point2)
         line_segment = self.generate_points(point1, point2, step_size)
 
         if self.isCollisionFree(line_segment):

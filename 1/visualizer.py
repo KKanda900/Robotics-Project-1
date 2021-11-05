@@ -7,6 +7,14 @@ from sampler import sample
 from collision import translate_robot
 import matplotlib.animation as animation
 
+def translate_robot(robot, point):
+    new_robot = []
+    for i in range(len(robot)):
+        robot_pt = [robot[i][0]+point[0], robot[i][1]+point[1]]
+        new_robot.append(robot_pt)
+
+    return new_robot
+
 def visualize_problem(robot, obstacles, start, goal):
     fig,ax = plt.subplots()
         

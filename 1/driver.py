@@ -1,4 +1,3 @@
-from os import path
 from file_parser import parse_problem
 from tree import Tree
 from rtt import rtt

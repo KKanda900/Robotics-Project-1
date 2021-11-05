@@ -1,27 +1,11 @@
 import numpy as np
 from visualizer import translate_robot
 
-# fix this to better suit what we need
-def checkLineIntersection(pt1, pt2, pt3, pt4):
-    x1 = pt1[0]
-    y1 = pt1[1]
-    x2 = pt2[0]
-    y2 = pt2[1]
-    
-    x3 = pt3[0]
-    y3 = pt3[1]
-    x4 = pt4[0]
-    y4 = pt4[1]
-     
-    if (((x1-x2)*(y3-y4)) - ((y1-y2)*(x3-x4))) != 0:
-        P1 = (((x1*y2 - y1*x2)*(x3-x4)) - ((x1-x2)*(x3*y4-y3*x4)))
-        Px = P1 / (((x1-x2)*(y3-y4)) - ((y1-y2)*(x3-x4)))
-        
-        P2 = (((x1*y2 - y1*x2)*(y3-y4)) - ((y1-y2)*(x3*y4-y3*x4)))
-        Py = P2 / (((x1-x2)*(y3-y4)) - ((y1-y2)*(x3-x4)))
-
-        return (Px, Py)
-
+def checkIntersection(pt1, pt2, pt3, pt4):
+    if (((pt1[0]-pt2[0])*(pt3[1]-pt4[1])) - ((pt1[1]-pt2[1])*(pt3[0]-pt4[0]))) != 0:
+        x = ((((pt1[0]*pt2[1] - pt1[1]*pt2[0])*(pt3[0]-pt4[0])) - ((pt1[0]-pt2[0])*(pt3[0]*pt4[1]-pt3[1]*pt4[0])))) / (((pt1[0]-pt2[0])*(pt3[1]-pt4[1])) - ((pt1[1]-pt2[1])*(pt3[0]-pt4[0])))
+        y = ((((pt1[0]*pt2[1] - pt1[1]*pt2[0])*(pt3[1]-pt4[1])) - ((pt1[1]-pt2[1])*(pt3[0]*pt4[1]-pt3[1]*pt4[0])))) / (((pt1[0]-pt2[0])*(pt3[1]-pt4[1])) - ((pt1[1]-pt2[1])*(pt3[0]-pt4[0])))
+        return (x, y)
     else:
         return None
 
@@ -57,7 +41,7 @@ def intersection(robot, obstacle):
     while len(robotSegments) != 0:
         robot_seg = robotSegments.pop(0)
         for i in range(len(obstacleSegments)):
-            if checkLineIntersection(robot_seg[0], robot_seg[0], obstacleSegments[i][0], obstacleSegments[i][1]) != None:
+            if checkIntersection(robot_seg[0], robot_seg[0], obstacleSegments[i][0], obstacleSegments[i][1]) != None:
                 return True
 
     rx, ry = get_xy(robot)
